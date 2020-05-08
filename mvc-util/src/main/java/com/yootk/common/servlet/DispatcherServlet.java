@@ -1,6 +1,8 @@
 package com.yootk.common.servlet;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.yootk.common.bean.ControllerRequestMapping;
+import com.yootk.common.bean.ModeAndView;
 import com.yootk.common.bean.ScannerPackageUtil;
 
 import javax.servlet.ServletConfig;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * 此servlet主要实现请求的接收以及Action分发处理，在整个的处理过程之中该Servlet不要直接通过注解配置
@@ -32,7 +35,20 @@ public class DispatcherServlet extends HttpServlet {
         ControllerRequestMapping mapping = ScannerPackageUtil.getActionMap().get(path) ; // 根据路径获取ControllerRequestMapping
         try {
             Object actionObject = mapping.getActionClazz().getDeclaredConstructor().newInstance() ; // 获取Action实例化对象
-            mapping.getActionMethod().invoke(actionObject); // 方法中没有参数
+            // 方法调用完成之后一般都会存在有返回值信息
+            Object returnData = mapping.getActionMethod().invoke(actionObject); // 方法中没有参数
+            System.out.println("***************** 【Action处理方法返回结果】" + returnData);
+            if (returnData != null) {   // 进行任何的页面跳转
+                if (returnData.getClass().equals(String.class)) {   // 返回的类型是字符串
+                    request.getRequestDispatcher(returnData.toString()).forward(request, response); // 跳转
+                } else if (returnData.getClass().equals(ModeAndView.class)) {
+                    ModeAndView mav = (ModeAndView) returnData ; // 强制转型
+                    for (Map.Entry<String, Object> entry : mav.getAttributes().entrySet()) {
+                        request.setAttribute(entry.getKey(), entry.getValue()); // 属性配置
+                    }
+                    request.getRequestDispatcher(mav.getPath()).forward(request, response); // 跳转
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
