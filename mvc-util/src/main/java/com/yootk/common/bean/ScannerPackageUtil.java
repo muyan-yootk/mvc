@@ -1,8 +1,17 @@
 package com.yootk.common.bean;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScannerPackageUtil {
+    // 此时key描述的是请求路径，而Value描述的是该路径对应的Action以及Method反射对象
+    // 目的：通过路径获取Action和Method信息并且通过反射进行控制层方法调用
+    private final static Map<String, ControllerRequestMapping> ACTION_MAP = new HashMap<>() ;
+    public static Map<String, ControllerRequestMapping> getActionMap() {
+        return ACTION_MAP;
+    }
+
     /**
      * 根据指定的扫描包的配置进行所有类的扫描处理
      * @param clazz 获取程序的起点类，通过这个起点类获取当前的工作路径
@@ -18,20 +27,31 @@ public class ScannerPackageUtil {
         for (int x = 0; x < resultPackages.length; x++) {   // 此时配置了多个扫描包
             String subDir = resultPackages[x].replace(".", File.separator) ;
             File file = new File(baseDir + subDir.trim()) ;
-            listPackageDir(file); // 列出所有的子目录组成
+            listPackageDir(baseDir.replace("/", File.separator).substring(1), file); // 列出所有的子目录组成
         }
     }
-    private static void listPackageDir(File file) {
+
+    /**
+     * 根据指定的“父目录 + 扫描包名称”获取此包目录下的所有类文件
+     * @param baseDir 项目父目录
+     * @param file 子路径
+     */
+    private static void listPackageDir(String baseDir, File file) {
         if (file.isDirectory()) {   // 给定的File是一个目录
             File result [] = file.listFiles() ; // 列出目录组成
             if (result != null) {
                 for (int x = 0 ; x < result.length ; x ++) {
-                    listPackageDir(result[x]); // 持续列出子目录
+                    listPackageDir(baseDir, result[x]); // 持续列出子目录
                 }
             }
         } else {
             if (file.isFile()) {
-                System.out.println(file);
+                String className = file.getAbsolutePath().replace(baseDir, "").replace(File.separator, ".").replace(".class", "");
+                try {
+                    ACTION_MAP.putAll(new ConfigAnnotationParseUtil(Class.forName(className)).getResult());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
