@@ -21,11 +21,7 @@ public class DeptAction {
         return mav ; // 直接返回页面路径
     }
     @RequestMapping("dept_add")
-    public void add(long deptno, String dname, String loc) {
-        Dept dept = new Dept() ;
-        dept.setDeptno(deptno);
-        dept.setDname(dname);
-        dept.setLoc(loc);
+    public void add(Dept dept) {
         try {
             this.deptService.add(dept) ;
         } catch (Exception e) {
