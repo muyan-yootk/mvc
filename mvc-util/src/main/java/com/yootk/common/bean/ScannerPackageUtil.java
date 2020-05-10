@@ -8,6 +8,12 @@ public class ScannerPackageUtil {
     // 此时key描述的是请求路径，而Value描述的是该路径对应的Action以及Method反射对象
     // 目的：通过路径获取Action和Method信息并且通过反射进行控制层方法调用
     private final static Map<String, ControllerRequestMapping> ACTION_MAP = new HashMap<>() ;
+    // 根据配置的注解名称进行指定类型的查找
+    private final static Map<String, Class> BY_NAME_MAP = new HashMap<>();
+    // 是根据接口的类型定义指定类型的查找
+    private final static Map<Class, Class> SERVICE_MAP = new HashMap<>();
+    // 根据接口类型定义数据层类型的查找
+    private final static Map<Class, Class> DAO_MAP = new HashMap<>() ;
     public static Map<String, ControllerRequestMapping> getActionMap() {
         return ACTION_MAP;
     }
@@ -48,11 +54,27 @@ public class ScannerPackageUtil {
             if (file.isFile()) {
                 String className = file.getAbsolutePath().replace(baseDir, "").replace(File.separator, ".").replace(".class", "");
                 try {
-                    ACTION_MAP.putAll(new ConfigAnnotationParseUtil(Class.forName(className)).getResult());
+                    ConfigAnnotationParseUtil config = new ConfigAnnotationParseUtil(Class.forName(className)) ;
+                    ACTION_MAP.putAll(config.getResult());
+                    BY_NAME_MAP.putAll(config.getNameAndTypeMap());
+                    SERVICE_MAP.putAll(config.getServiceInterfaceAndClassMap());
+                    DAO_MAP.putAll(config.getDaoInterfaceAndClassMap());
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    public static Map<Class, Class> getServiceMap() {
+        return SERVICE_MAP;
+    }
+
+    public static Map<String, Class> getByNameMap() {
+        return BY_NAME_MAP;
+    }
+
+    public static Map<Class, Class> getDaoMap() {
+        return DAO_MAP;
     }
 }

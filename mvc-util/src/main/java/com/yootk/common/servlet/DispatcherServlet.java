@@ -2,8 +2,10 @@ package com.yootk.common.servlet;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.yootk.common.bean.ControllerRequestMapping;
+import com.yootk.common.bean.DependObject;
 import com.yootk.common.bean.ModeAndView;
 import com.yootk.common.bean.ScannerPackageUtil;
+import com.yootk.common.util.WebObjectUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -30,14 +32,16 @@ public class DispatcherServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        WebObjectUtil.requestThreadLocal.set(request);
+        WebObjectUtil.responseThreadLocal.set(response);
         // 以下可以根据用户的访问路径进行动态的信息获取
         String path = request.getServletPath().substring(0, request.getServletPath().lastIndexOf(".action")) ;
         ControllerRequestMapping mapping = ScannerPackageUtil.getActionMap().get(path) ; // 根据路径获取ControllerRequestMapping
         try {
             Object actionObject = mapping.getActionClazz().getDeclaredConstructor().newInstance() ; // 获取Action实例化对象
+            DependObject dependObject = new DependObject(actionObject) ; // 由控制层调用依赖配置
             // 方法调用完成之后一般都会存在有返回值信息
             Object returnData = mapping.getActionMethod().invoke(actionObject); // 方法中没有参数
-            System.out.println("***************** 【Action处理方法返回结果】" + returnData);
             if (returnData != null) {   // 进行任何的页面跳转
                 if (returnData.getClass().equals(String.class)) {   // 返回的类型是字符串
                     request.getRequestDispatcher(returnData.toString()).forward(request, response); // 跳转
