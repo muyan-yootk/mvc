@@ -5,6 +5,7 @@ import com.yootk.common.bean.ControllerRequestMapping;
 import com.yootk.common.bean.DependObject;
 import com.yootk.common.bean.ModeAndView;
 import com.yootk.common.bean.ScannerPackageUtil;
+import com.yootk.common.servlet.bean.ActionParameterUtil;
 import com.yootk.common.util.WebObjectUtil;
 
 import javax.servlet.ServletConfig;
@@ -12,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class DispatcherServlet extends HttpServlet {
             Object actionObject = mapping.getActionClazz().getDeclaredConstructor().newInstance() ; // 获取Action实例化对象
             DependObject dependObject = new DependObject(actionObject) ; // 由控制层调用依赖配置
             // 方法调用完成之后一般都会存在有返回值信息
-            Object returnData = mapping.getActionMethod().invoke(actionObject); // 方法中没有参数
+            Object returnData = mapping.getActionMethod().invoke(actionObject, ActionParameterUtil.getMethodParameterValue(actionObject, mapping.getActionMethod())); // 方法中没有参数
             if (returnData != null) {   // 进行任何的页面跳转
                 if (returnData.getClass().equals(String.class)) {   // 返回的类型是字符串
                     request.getRequestDispatcher(returnData.toString()).forward(request, response); // 跳转

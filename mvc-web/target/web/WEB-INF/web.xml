@@ -10,6 +10,14 @@
     <description>
         Welcome to Tomcat
     </description>
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>com.yootk.web.filter.EncodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <servlet-name>DispatcherServlet</servlet-name>
         <servlet-class>com.yootk.common.servlet.DispatcherServlet</servlet-class>

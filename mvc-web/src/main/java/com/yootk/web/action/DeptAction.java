@@ -4,7 +4,9 @@ import com.yootk.common.annotation.Autowired;
 import com.yootk.common.annotation.Controller;
 import com.yootk.common.annotation.RequestMapping;
 import com.yootk.common.bean.ModeAndView;
+import com.yootk.common.util.WebObjectUtil;
 import com.yootk.web.service.IDeptService;
+import com.yootk.web.vo.Dept;
 
 @Controller
 @RequestMapping("/pages/back/admin/dept/")
@@ -19,9 +21,13 @@ public class DeptAction {
         return mav ; // 直接返回页面路径
     }
     @RequestMapping("dept_add")
-    public void add() {
+    public void add(long deptno, String dname, String loc) {
+        Dept dept = new Dept() ;
+        dept.setDeptno(deptno);
+        dept.setDname(dname);
+        dept.setLoc(loc);
         try {
-            this.deptService.add(null) ;
+            this.deptService.add(dept) ;
         } catch (Exception e) {
             e.printStackTrace();
         }
