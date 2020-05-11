@@ -26,7 +26,7 @@ public class ValidateUtil {
             for (int x = 0 ; x < rules.length ; x ++) { // 获取所有的规则信息
                 String temp [] = rules[x].split(":") ; // 规则拆分
                 // 根据参数的名称获取对应的提交参数的内容
-                String value = WebObjectUtil.getRequest().getParameter(temp[0]) ;
+                String value = WebObjectUtil.getParameterUtil().getParameter(temp[0]) ;
                 switch (temp[1]) {  // JDK 1.7之后，switch开始支持字符串判断
                     case "int": {
                         if (!this.isInt(value)) {    // 是否是整数

@@ -4,9 +4,12 @@ import com.yootk.common.annotation.Autowired;
 import com.yootk.common.annotation.Controller;
 import com.yootk.common.annotation.RequestMapping;
 import com.yootk.common.bean.ModeAndView;
+import com.yootk.common.servlet.bean.MultipartFile;
 import com.yootk.common.util.WebObjectUtil;
 import com.yootk.web.service.IDeptService;
 import com.yootk.web.vo.Dept;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/pages/back/admin/dept/")
@@ -21,8 +24,14 @@ public class DeptAction {
         return mav ; // 直接返回页面路径
     }
     @RequestMapping("dept_add")
-    public void add(Dept dept) {
+    public void add(Dept dept, MultipartFile photo) { // 上传文件
         try {
+            System.out.println("***【上传文件】文件名称：" + photo.getOriginFilename());
+            System.out.println("***【上传文件】文件类型：" + photo.getContentType());
+            System.out.println("***【上传文件】文件大小：" + photo.length());
+            String fileName = UUID.randomUUID() + "." + photo.getContentType().substring(photo.getContentType().lastIndexOf("/") + 1) ;
+            String savePath = WebObjectUtil.getApplication().getRealPath("/upload/") + fileName ;
+            photo.transfer(savePath) ; // 文件保存
             this.deptService.add(dept) ;
         } catch (Exception e) {
             e.printStackTrace();

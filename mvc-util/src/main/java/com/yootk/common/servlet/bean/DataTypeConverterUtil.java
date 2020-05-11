@@ -14,7 +14,7 @@ public class DataTypeConverterUtil { // 进行字符串类型的转换处理
      * @return 将所有的数据以Object形式返回
      */
     public static Object convert(String paramName, Class<?> type) {
-        String value = WebObjectUtil.getRequest().getParameter(paramName) ; // 接收请求参数
+        String value = WebObjectUtil.getParameterUtil().getParameter(paramName) ; // 接收请求参数
         if (String.class.equals(type)) {    // 当前参数的类型为String
             return value ;
         } else if (long.class.equals(type) || Long.class.equals(type)) {    // 长整型
@@ -38,6 +38,13 @@ public class DataTypeConverterUtil { // 进行字符串类型的转换处理
         } else if (boolean.class.equals(type) || Boolean.class.equals(type)) {  // 整型
             try {
                 return Boolean.parseBoolean(value);
+            } catch (Exception e) {
+                return null ;
+            }
+        } else if (MultipartFile.class.equals(type)) { // 现在的类型为上传文件
+            try {
+                System.err.println(WebObjectUtil.getParameterUtil().getAllUploadFile());
+                return WebObjectUtil.getParameterUtil().getAllUploadFile().get(paramName).get(0) ;
             } catch (Exception e) {
                 return null ;
             }

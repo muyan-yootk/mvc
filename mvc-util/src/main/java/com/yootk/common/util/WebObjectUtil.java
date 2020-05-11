@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 public class WebObjectUtil {
     public static ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<>();
     public static ThreadLocal<HttpServletResponse> responseThreadLocal = new ThreadLocal<>();
+    public static ThreadLocal<ParameterUtil> parameterUtilThreadLocal = new ThreadLocal<>() ;
 
     public static HttpServletRequest getRequest() {
         return requestThreadLocal.get();
@@ -20,5 +21,8 @@ public class WebObjectUtil {
 
     public static ServletContext getApplication() {
         return requestThreadLocal.get().getServletContext();
+    }
+    public static ParameterUtil getParameterUtil() {
+        return parameterUtilThreadLocal.get() ;
     }
 }

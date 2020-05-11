@@ -6,6 +6,7 @@ import com.yootk.common.bean.DependObject;
 import com.yootk.common.bean.ModeAndView;
 import com.yootk.common.bean.ScannerPackageUtil;
 import com.yootk.common.servlet.bean.ActionParameterUtil;
+import com.yootk.common.util.ParameterUtil;
 import com.yootk.common.util.ResourceLoader;
 import com.yootk.common.util.WebObjectUtil;
 import com.yootk.common.validate.ValidateUtil;
@@ -40,6 +41,7 @@ public class DispatcherServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         WebObjectUtil.requestThreadLocal.set(request);
         WebObjectUtil.responseThreadLocal.set(response);
+        WebObjectUtil.parameterUtilThreadLocal.set(new ParameterUtil(request)); // 设置ParameterUtil实例
         // 以下可以根据用户的访问路径进行动态的信息获取
         String path = request.getServletPath().substring(0, request.getServletPath().lastIndexOf(".action")) ;
         // 根据路径获取ControllerRequestMapping，可以直接获取Action类对应的Class实例以及调用的Method实例
@@ -62,6 +64,7 @@ public class DispatcherServlet extends HttpServlet {
                         request.getRequestDispatcher(mav.getPath()).forward(request, response); // 跳转
                     }
                 }
+                WebObjectUtil.getParameterUtil().clean(); // 整体的请求执行完毕后删除临时文件
             } catch (Exception e) {
                 e.printStackTrace();
             }
