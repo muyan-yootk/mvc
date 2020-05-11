@@ -29,6 +29,10 @@
                 com.yootk.web.dao;
             </param-value>
         </init-param>
+<!--        <init-param>-->
+<!--            <param-name>errorPage</param-name>-->
+<!--            <param-value>/pages/common/error_page.jsp</param-value>-->
+<!--        </init-param>-->
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
