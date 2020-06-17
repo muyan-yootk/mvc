@@ -10,6 +10,22 @@
     <description>
         Welcome to Tomcat
     </description>
+    <servlet>
+        <servlet-name>DeptServlet</servlet-name>
+        <servlet-class>com.yootk.web.servlet.DeptServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>com.yootk.web.servlet.UploadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeptServlet</servlet-name>
+        <url-pattern>/DeptServlet</url-pattern>
+    </servlet-mapping>
     <filter>
         <filter-name>EncodingFilter</filter-name>
         <filter-class>com.yootk.web.filter.EncodingFilter</filter-class>

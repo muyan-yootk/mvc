@@ -20,6 +20,7 @@
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <mvc.version>1.0</mvc.version>
         <spring.version>5.2.6.RELEASE</spring.version>
+        <fastjson.version>1.2.68</fastjson.version>
         <!-- 定义项目构建的相关环境属性 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -44,6 +45,12 @@
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons-fileupload.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
